@@ -1,6 +1,8 @@
+"use client";
 import { CardHome } from "./components/cardsHome";
 import { LoginSlider } from "./components/slider";
 import { SlEnergy } from "react-icons/sl";
+
 
 export default function Home() {
   return (
