@@ -1,16 +1,18 @@
 "use client";
 
 import { CiLock } from "react-icons/ci";
+import { Nombre } from "./nombre";
 
 interface Props {
   password: string;
   onChange?: (value: string) => void;
+  nombre: string
 }
 
-export function Password({ password, onChange }: Props) {
+export function Password({ password, onChange,nombre }: Props) {
   return (
     <div className="flex flex-col gap-1 w-full">
-      <p className="text-sm font-bold text-black">Contraseña</p>
+      <p className="text-sm font-bold text-black">{nombre}</p>
 
       <div
         className="flex items-center bg-gray-100 gap-2 rounded-lg px-3 py-2
