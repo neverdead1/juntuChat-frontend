@@ -2,7 +2,7 @@ import { GoHash } from "react-icons/go";
 
 interface Props {
   nombreGrupo: string;
-  isActive?: boolean; // nueva prop opcional para canal activo
+  isActive?: boolean; 
 }
 
 export function SliderCardsCanales({ nombreGrupo, isActive = false }: Props) {
