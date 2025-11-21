@@ -8,6 +8,7 @@ import { ListaConectados } from "./components/listaConectador";
 import { InputChat } from "./components/inputChat";
 import { useState } from "react";
 import { LuUsers } from "react-icons/lu";
+import PopUp from "./components/popUp";
 
 export default function Home() {
   const [mensaje, setMensaje] = useState("");
@@ -25,7 +26,7 @@ export default function Home() {
 
         <div className="text-white flex items-center justify-between px-4 py-8 border-b border-gray-800">
           <h1 className="text-lg font-medium">Canales</h1>
-          <FaPlus className="cursor-pointer" />
+          <PopUp></PopUp>
         </div>
 
         <div className="flex-1 overflow-y-auto px-2 py-3 space-y-2">
@@ -67,11 +68,11 @@ export default function Home() {
 
       </div>
 
-      <div className="w-64 h-full bg-white border-l border-gray-200 flex flex-col">
+      <div className="w-64 h-full bg-white border-l border-gray-200  flex flex-col">
 
-        <div className="flex items-center px-4 py-8 border-b border-gray-200">
+        <div className="flex items-center px-8 py-8 border-b border-gray-200 ">
           <LuUsers size={22} className="text-black" />
-          <span className="ml-2 text-md font-semibold text-black">
+          <span className="ml-2 text-md font-semibold text-black ">
             Miembros
           </span>
         </div>
@@ -81,7 +82,7 @@ export default function Home() {
           <ListaConectados estadoUsr={true} nombreUsr="Luis Condori" />
           <ListaConectados estadoUsr={true} nombreUsr="María López" />
         </div>
-
+        
       </div>
     </div>
   );
