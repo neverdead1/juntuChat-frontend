@@ -22,7 +22,7 @@ export default function PopUp() {
       {/* Botón para abrir popup */}
       <button
         onClick={openPopup}
-        className="bg-black text-white p-3 rounded-full flex items-center justify-center hover:bg-black/80 transition"
+        className=" text-white p-3 px-4 py-3 rounded-lg flex items-center justify-center hover:bg-gray-800 transition"
         aria-label="Abrir popup"
       >
         <FaPlus size={20} />
