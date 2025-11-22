@@ -8,20 +8,37 @@ export default function PopUp() {
   const [popUpOpen, setPopUpOpen] = useState(false);
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
+  const [correo, setCorreo] = useState("");
+  const [participantes, setParticipantes] = useState<string[]>([]);
 
   const closePopup = () => setPopUpOpen(false);
   const openPopup = () => setPopUpOpen(true);
 
+  const agregarCorreo = () => {
+    if (correo.trim() === "") return;
+    setParticipantes([...participantes, correo.trim()]);
+    setCorreo("");
+  };
+
+  const eliminarCorreo = (index: number) => {
+    const nuevos = participantes.filter((_, i) => i !== index);
+    setParticipantes(nuevos);
+  };
+
   const crearCanal = () => {
-    console.log({ nombre, descripcion });
+    console.log({ nombre, descripcion, participantes });
     closePopup();
+    setParticipantes([]);
+    setNombre("");
+    setDescripcion("");
+    setCorreo("");
   };
 
   return (
     <div>
       <button
         onClick={openPopup}
-        className=" text-white p-3 px-4 py-3 rounded-lg flex items-center justify-center hover:bg-gray-800 transition"
+        className="text-white p-3 px-4 rounded-lg flex items-center justify-center hover:bg-gray-800 transition"
         aria-label="Abrir popup"
       >
         <FaPlus size={20} />
@@ -77,6 +94,47 @@ export default function PopUp() {
                   onChange={(e) => setDescripcion(e.target.value)}
                   className="outline-none w-full text-gray-800 bg-gray-100 rounded-lg px-3 py-2 focus:ring-2 focus:ring-gray-300 transition"
                 />
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-bold text-black">
+                  Agregar Participantes
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="ejemplo@email.com"
+                    value={correo}
+                    onChange={(e) => setCorreo(e.target.value)}
+                    className="outline-none flex-1 text-gray-800 bg-gray-100 rounded-lg px-3 py-2 focus:ring-2 focus:ring-gray-300 transition"
+                  />
+                  <button
+                    onClick={agregarCorreo}
+                    className="bg-gray-900 text-white px-3 py-2 rounded-lg hover:bg-gray-800 transition"
+                  >
+                    <FaPlus />
+                  </button>
+                </div>
+
+                {/* Dropdown */}
+                {participantes.length > 0 && (
+                  <div className="mt-2 bg-gray-100 text-gray-600 rounded-lg border border-gray-300 divide-y divide-gray-300 max-h-60 overflow-y-auto">
+                    {participantes.map((p, i) => (
+                      <div
+                        key={i}
+                        className="flex justify-between items-center px-3 py-2 hover:bg-gray-200 transition"
+                      >
+                        <span>{p}</span>
+                        <button
+                          onClick={() => eliminarCorreo(i)}
+                          className="text-gray-800 hover:text-gray-950"
+                        >
+                          <HiOutlineX />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-end gap-2 mt-4">
