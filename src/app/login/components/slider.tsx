@@ -6,6 +6,7 @@ import { Nombre } from "./inputs/nombre";
 import { Sesion } from "./buttons/buttonSesion";
 import { SesionGoogle } from "./buttons/buttonGoogle";
 import { CiChat1 } from "react-icons/ci";
+import { useRouter } from "next/navigation";
 
 export function LoginSlider() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,37 @@ export function LoginSlider() {
   const [nombre, setNombre] = useState("");
   const [modo, setModo] = useState<"login" | "registro">("login");
 
+  const router = useRouter();
+
+  const manejarLogin = async () => {
+    try {
+      const res = await fetch("http://localhost:8000/usuario/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          correo: email,
+          contrasena: password
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.message);
+        return;
+      }
+
+      alert("¡Login correcto!");
+      console.log("Usuario:", data.usuario);
+      router.push("/dashBoard");
+
+    } catch (error) {
+      console.error(error);
+      alert("Error al conectar con el servidor");
+    }
+  };
+
+  
   return (
     <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg flex flex-col gap-6">
 
@@ -80,7 +112,10 @@ export function LoginSlider() {
         </>
       )}
 
-      <Sesion nombre={modo === "login" ? "Iniciar Sesión" : "Registrarse"} />
+      <Sesion
+        nombre={modo === "login" ? "Iniciar Sesión" : "Registrarse"}
+        onClick={modo === "login" ? manejarLogin : () => {}}
+      />
       <SesionGoogle />
 
       <div className="flex items-center gap-2">
