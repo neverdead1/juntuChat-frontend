@@ -10,6 +10,7 @@ import { useState } from "react";
 import { LuUsers } from "react-icons/lu";
 import PopUp from "./components/popUp";
 import { useAuthContext } from "../context/AuthContext";
+import { useGrupos } from "./hooks/useGrupos";
 
 
 
@@ -17,6 +18,10 @@ export default function Home() {
   const [mensaje, setMensaje] = useState("");
 
   const { usuario } = useAuthContext();
+  const { grupos, loading, error } = useGrupos(usuario?._id);
+
+  if (loading) return <div>Cargando grupos...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   const enviarMensaje = () => {
     if (!mensaje.trim()) return;
@@ -36,10 +41,9 @@ export default function Home() {
         </div>
 
         <div className="flex-1 overflow-y-auto px-2 py-3 space-y-2">
-          <SliderCardsCanales nombreGrupo={"umss"} />
-          <SliderCardsCanales nombreGrupo={"frontend"} />
-          <SliderCardsCanales nombreGrupo={"backend"} />
-          <SliderCardsCanales nombreGrupo={"devops"} />
+          {grupos.map((grupo) => (
+            <SliderCardsCanales key={grupo._id} nombreGrupo={grupo.nombre_grupo} />
+          ))}
         </div>
 
 
