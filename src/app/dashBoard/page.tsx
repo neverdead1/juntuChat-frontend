@@ -31,7 +31,8 @@ export default function Home() {
 
         <div className="text-white flex items-center justify-between px-4 py-8 border-b border-gray-800">
           <h1 className="text-lg font-medium">Canales</h1>
-          <PopUp></PopUp>
+          <PopUp currentUserId={usuario?.correo} />
+
         </div>
 
         <div className="flex-1 overflow-y-auto px-2 py-3 space-y-2">

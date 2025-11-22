@@ -3,13 +3,27 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { HiOutlineX } from "react-icons/hi";
+import { useChat } from "../hooks/useChat";
 
-export default function PopUp() {
+interface PopUpProps {
+  currentUserId?: string;
+}
+
+export default function PopUp({ currentUserId }: PopUpProps) {
+
+  const {
+    nombre,
+    setNombre,
+    descripcion,
+    setDescripcion,
+    participantes,
+    setParticipantes,
+    correo,
+    setCorreo,
+    crearCanal,
+  } = useChat();
+
   const [popUpOpen, setPopUpOpen] = useState(false);
-  const [nombre, setNombre] = useState("");
-  const [descripcion, setDescripcion] = useState("");
-  const [correo, setCorreo] = useState("");
-  const [participantes, setParticipantes] = useState<string[]>([]);
 
   const closePopup = () => setPopUpOpen(false);
   const openPopup = () => setPopUpOpen(true);
@@ -25,14 +39,14 @@ export default function PopUp() {
     setParticipantes(nuevos);
   };
 
-  const crearCanal = () => {
+  {/** const crearcanal = () => {
     console.log({ nombre, descripcion, participantes });
     closePopup();
     setParticipantes([]);
     setNombre("");
     setDescripcion("");
     setCorreo("");
-  };
+  };*/}
 
   return (
     <div>
@@ -65,7 +79,6 @@ export default function PopUp() {
               <h1 className="text-black text-xl font-bold">
                 Crear Nuevo Canal
               </h1>
-
               <p className="text-gray-400">
                 Crear un nuevo canal de colaboración para tu equipo
               </p>
@@ -146,10 +159,19 @@ export default function PopUp() {
                 </button>
                 <button
                   className="bg-gray-900 text-white rounded-lg px-4 py-2 hover:bg-gray-800 transition"
-                  onClick={crearCanal}
+                  onClick={async () => {
+                    if (!currentUserId) {
+                      alert("No se ha identificado el usuario actual");
+                      return;
+                    }
+                    await crearCanal("" + currentUserId); // ✅ esperar a que termine
+                    closePopup(); // cerrar popup después
+                  }}
                 >
                   Crear Canal
                 </button>
+
+
               </div>
             </div>
           </div>
