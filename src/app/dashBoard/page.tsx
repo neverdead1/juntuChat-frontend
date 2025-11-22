@@ -1,6 +1,5 @@
 "use client";
 
-import { FaPlus } from "react-icons/fa6";
 import { SliderCardsCanales } from "./components/slider/sliderCardsCanales";
 import { SliderPerfilCard } from "./components/slider/sliderPerfilCard";
 import { HeaderChat } from "./components/headerChat";
@@ -10,7 +9,7 @@ import { useState } from "react";
 import { LuUsers } from "react-icons/lu";
 import PopUp from "./components/popUp";
 import { useAuthContext } from "../context/AuthContext";
-import { useGrupos } from "./hooks/useGrupos";
+import { useGrupos, Grupo } from "./hooks/useGrupos";
 
 
 
@@ -19,6 +18,10 @@ export default function Home() {
 
   const { usuario } = useAuthContext();
   const { grupos, loading, error } = useGrupos(usuario?._id);
+
+  const [grupoSeleccionado, setGrupoSeleccionado] = useState<Grupo | null>(
+    grupos.length > 0 ? grupos[0] : null
+  );
 
   if (loading) return <div>Cargando grupos...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -42,7 +45,8 @@ export default function Home() {
 
         <div className="flex-1 overflow-y-auto px-2 py-3 space-y-2">
           {grupos.map((grupo) => (
-            <SliderCardsCanales key={grupo._id} nombreGrupo={grupo.nombre_grupo} />
+            <SliderCardsCanales key={grupo._id} nombreGrupo={grupo.nombre_grupo} onClick={() => setGrupoSeleccionado(grupo)} />
+
           ))}
         </div>
 
@@ -59,8 +63,8 @@ export default function Home() {
       <div className="flex-1 h-full flex flex-col border-r border-gray-200">
 
         <HeaderChat
-          nombreChat={"UMSS"}
-          descripcion={"estudiantes"}
+          nombreChat={grupoSeleccionado?.nombre_grupo || " "}
+          descripcion={grupoSeleccionado?.descripcion || " "}
           estado={true}
         />
 
