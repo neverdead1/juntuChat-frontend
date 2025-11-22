@@ -6,46 +6,34 @@ import { Nombre } from "./inputs/nombre";
 import { Sesion } from "./buttons/buttonSesion";
 import { SesionGoogle } from "./buttons/buttonGoogle";
 import { CiChat1 } from "react-icons/ci";
-import { useRouter } from "next/navigation";
+import { useAuth } from "../hooks/useAuth";
+
 
 export function LoginSlider() {
+  const [modo, setModo] = useState<"login" | "registro">("login");
+  const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [nombre, setNombre] = useState("");
-  const [modo, setModo] = useState<"login" | "registro">("login");
 
-  const router = useRouter();
+  const { usuario, error, loading, registrar, login, loginGoogle } = useAuth();
 
-  const manejarLogin = async () => {
-    try {
-      const res = await fetch("http://localhost:8000/usuario/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          correo: email,
-          contrasena: password
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.message);
+  const handleSubmit = async () => {
+    if (modo === "registro") {
+      if (password !== confirmPassword) {
+        alert("Las contraseñas no coinciden");
         return;
       }
-
-      alert("¡Login correcto!");
-      console.log("Usuario:", data.usuario);
-      router.push("/dashBoard");
-
-    } catch (error) {
-      console.error(error);
-      alert("Error al conectar con el servidor");
+      await registrar(nombre, email, password);
+    } else {
+      await login(email, password);
     }
   };
 
-  
+  const handleGoogleLogin = async (user: { nombre: string; correo: string }) => {
+    await loginGoogle(user.nombre, user.correo);
+  };
+
   return (
     <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg flex flex-col gap-6">
 
@@ -56,27 +44,15 @@ export function LoginSlider() {
       </div>
 
       <h2 className="text-2xl font-bold text-center">Bienvenido</h2>
-
-      <p className="text-center text-gray-500 text-sm">
-        Inicia sesión o crea una cuenta para comenzar
-      </p>
+      <p className="text-center text-gray-500 text-sm">Inicia sesión o crea una cuenta para comenzar</p>
 
       <div className="flex items-center bg-gray-200 rounded-2xl p-1">
-        <button
-          onClick={() => setModo("login")}
-          className={`w-1/2 text-sm font-bold rounded-xl px-3 py-2 transition-all
-            ${modo === "login" ? "bg-white text-black shadow" : "text-gray-700"}
-          `}
-        >
+        <button onClick={() => setModo("login")} className={`w-1/2 text-sm font-bold rounded-xl px-3 py-2 transition-all
+            ${modo === "login" ? "bg-white text-black shadow" : "text-gray-700"}`}>
           Iniciar Sesión
         </button>
-
-        <button
-          onClick={() => setModo("registro")}
-          className={`w-1/2 text-sm font-bold rounded-xl px-3 py-2 transition-all
-            ${modo === "registro" ? "bg-white text-black shadow" : "text-gray-700"}
-          `}
-        >
+        <button onClick={() => setModo("registro")} className={`w-1/2 text-sm font-bold rounded-xl px-3 py-2 transition-all
+            ${modo === "registro" ? "bg-white text-black shadow" : "text-gray-700"}`}>
           Registrarse
         </button>
       </div>
@@ -84,49 +60,26 @@ export function LoginSlider() {
       {modo === "registro" && (
         <>
           <Nombre nombre={nombre} onChange={setNombre} />
-
           <Correo email={email} onChange={setEmail} />
-
-          <Password
-            password={password}
-            onChange={setPassword}
-            nombre={"Contraseña"}
-          />
-
-          <Password
-            password={confirmPassword}
-            onChange={setConfirmPassword}
-            nombre={"Confirmar Contraseña"}
-          />
+          <Password password={password} onChange={setPassword} nombre="Contraseña" />
+          <Password password={confirmPassword} onChange={setConfirmPassword} nombre="Confirmar Contraseña" />
         </>
       )}
 
       {modo === "login" && (
         <>
           <Correo email={email} onChange={setEmail} />
-          <Password
-            password={password}
-            onChange={setPassword}
-            nombre={"Contraseña"}
-          />
+          <Password password={password} onChange={setPassword} nombre="Contraseña" />
         </>
       )}
 
-      <Sesion
-        nombre={modo === "login" ? "Iniciar Sesión" : "Registrarse"}
-        onClick={modo === "login" ? manejarLogin : () => {}}
-      />
-      <SesionGoogle />
+      <Sesion nombre={modo === "login" ? "Iniciar Sesión" : "Registrarse"} onClick={handleSubmit} />
 
-      <div className="flex items-center gap-2">
-        <hr className="flex-1 border-gray-300" />
-        <span className="text-gray-400 text-xs">O CONTINÚA CON</span>
-        <hr className="flex-1 border-gray-300" />
-      </div>
+      <SesionGoogle onLogin={handleGoogleLogin} />
 
-      <p className="text-center text-gray-400 text-xs">
-        Al continuar, aceptas los términos de servicio
-      </p>
+      {loading && <p className="text-center text-blue-500">Cargando...</p>}
+      {error && <p className="text-center text-red-500">{error}</p>}
+      {usuario && <p className="text-center text-green-600">Bienvenido, {usuario.nombre}</p>}
     </div>
   );
 }

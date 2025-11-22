@@ -6,7 +6,11 @@ import { FcGoogle } from "react-icons/fc";
 import { auth, provider } from "@/app/login/utils/firebase";
 import { signInWithPopup } from "firebase/auth";
 
-export function SesionGoogle() {
+interface Props {
+  onLogin?: (user: { nombre: string; correo: string }) => void;
+}
+
+export function SesionGoogle({ onLogin }: Props) {
 
   function call_login_google() {
     signInWithPopup(auth, provider)
@@ -16,6 +20,12 @@ export function SesionGoogle() {
   
             // opcional enviar a tu backend NestJS
             // fetch("http://localhost:8000/usuario", { ... })
+            if (onLogin) {
+              onLogin({
+                nombre: user.displayName || "Usuario Google",
+                correo: user.email || "",
+              });
+            }
           })
           .catch((error) => {
             console.error("Error Google Login:", error);
