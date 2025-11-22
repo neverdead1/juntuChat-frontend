@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuthContext } from "@/app/context/AuthContext";
 
 interface Usuario {
   _id: string;
@@ -11,12 +12,11 @@ interface Usuario {
 }
 
 export function useAuth() {
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const { usuario, setUsuario } = useAuthContext(); // usamos el context
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Helper para manejar fetch
   const fetchAPI = async (url: string, body: any) => {
     const res = await fetch(url, {
       method: "POST",
@@ -25,9 +25,7 @@ export function useAuth() {
     });
 
     const data = await res.json();
-
     if (!res.ok) throw new Error(data.message || "Error de servidor");
-
     return data;
   };
 
@@ -36,12 +34,11 @@ export function useAuth() {
     setError(null);
     try {
       const data = await fetchAPI("http://localhost:8000/usuario", { nombre, correo, contrasena });
-      setUsuario(data);
-      router.push("/dashBoard"); // redirige al registro exitoso
-      setLoading(false);
-      return data;
+      setUsuario(data); // guardamos en el context
+      router.push("/dashBoard"); // redirige a pantalla de bienvenida
     } catch (err: any) {
       setError(err.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -52,11 +49,10 @@ export function useAuth() {
     try {
       const data = await fetchAPI("http://localhost:8000/usuario/login", { correo, contrasena });
       setUsuario(data.usuario);
-      router.push("/dashBoard"); // redirige al login exitoso
-      setLoading(false);
-      return data;
+      router.push("/dashBoard");
     } catch (err: any) {
       setError(err.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -67,11 +63,10 @@ export function useAuth() {
     try {
       const data = await fetchAPI("http://localhost:8000/usuario/login-google", { nombre, correo });
       setUsuario(data.usuario);
-      router.push("/dashBoard"); // redirige al login exitoso
-      setLoading(false);
-      return data;
+      router.push("/dashBoard");
     } catch (err: any) {
       setError(err.message);
+    } finally {
       setLoading(false);
     }
   };

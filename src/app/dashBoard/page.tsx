@@ -9,9 +9,14 @@ import { InputChat } from "./components/inputChat";
 import { useState } from "react";
 import { LuUsers } from "react-icons/lu";
 import PopUp from "./components/popUp";
+import { useAuthContext } from "../context/AuthContext";
+
+
 
 export default function Home() {
   const [mensaje, setMensaje] = useState("");
+
+  const { usuario } = useAuthContext();
 
   const enviarMensaje = () => {
     if (!mensaje.trim()) return;
@@ -39,8 +44,8 @@ export default function Home() {
 
         <div className="p-3 border-t border-gray-800">
           <SliderPerfilCard
-            nombreUsr={"Jhoan Claure"}
-            correoUsr={"jhoanmijael@gmail.com"}
+            nombreUsr={""+usuario?.nombre}
+            correoUsr={""+usuario?.correo}
           />
         </div>
 
