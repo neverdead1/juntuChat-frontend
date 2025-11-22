@@ -19,7 +19,6 @@ export default function PopUp() {
 
   return (
     <div>
-      {/* Botón para abrir popup */}
       <button
         onClick={openPopup}
         className=" text-white p-3 px-4 py-3 rounded-lg flex items-center justify-center hover:bg-gray-800 transition"
@@ -28,7 +27,6 @@ export default function PopUp() {
         <FaPlus size={20} />
       </button>
 
-      {/* Popup */}
       {popUpOpen && (
         <div
           className="fixed top-0 left-0 w-full h-full bg-black/20 backdrop-blur-sm flex justify-center items-center z-50"
@@ -38,7 +36,6 @@ export default function PopUp() {
             className="bg-white rounded-lg max-w-md w-full relative p-6"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Botón cerrar */}
             <button
               className="absolute top-4 right-4 text-2xl text-gray-600 hover:text-black"
               onClick={closePopup}
@@ -47,7 +44,6 @@ export default function PopUp() {
               <HiOutlineX />
             </button>
 
-            {/* Contenido */}
             <div className="flex flex-col gap-4 w-full mt-6">
               <h1 className="text-black text-xl font-bold">
                 Crear Nuevo Canal
@@ -57,7 +53,6 @@ export default function PopUp() {
                 Crear un nuevo canal de colaboración para tu equipo
               </p>
 
-              {/* Input Nombre */}
               <div className="flex flex-col gap-1">
                 <label className="text-sm font-bold text-black">
                   Nombre del canal
@@ -71,7 +66,6 @@ export default function PopUp() {
                 />
               </div>
 
-              {/* Input Descripción */}
               <div className="flex flex-col gap-1">
                 <label className="text-sm font-bold text-black">
                   Descripción
@@ -85,7 +79,6 @@ export default function PopUp() {
                 />
               </div>
 
-              {/* Botones Crear y Cancelar */}
               <div className="flex justify-end gap-2 mt-4">
                 <button
                   className="bg-gray-300 text-gray-800 rounded-lg px-3 py-2 hover:bg-gray-400 transition"
