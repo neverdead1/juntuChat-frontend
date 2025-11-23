@@ -6,6 +6,13 @@ export interface Grupo {
   nombre_grupo: string;
   descripcion : string;
   usuarios: string[];
+  id_chat: {
+    _id: string;
+    tipo_chat: string;
+    usuarios: string[];
+    // puedes agregar más campos si tu modelo de Chat los tiene
+  };
+
 }
 
 let socket: Socket | null = null;
