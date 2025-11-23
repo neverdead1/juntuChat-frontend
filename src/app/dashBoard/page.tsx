@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { SliderCardsCanales } from "./components/slider/sliderCardsCanales";
 import { SliderPerfilCard } from "./components/slider/sliderPerfilCard";
 import { HeaderChat } from "./components/headerChat";
@@ -26,13 +26,46 @@ export default function Home() {
     }
   }, [grupos]);
 
-  const { mensajes, loading: loadingMensajes } = useMensajes(
-  grupoSeleccionado?.id_chat?._id || null
-);
+  const { mensajes, loading: loadingMensajes, setMensajes } = useMensajes(
+    grupoSeleccionado?.id_chat?._id || null
+  );
 
-  const enviarMensaje = () => {
-    if (!mensaje.trim()) return;
-    console.log("Mensaje enviado:", mensaje);
+  // Ref para scroll automático
+  const chatEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [mensajes]);
+
+  const enviarMensaje = async () => {
+    if (!mensaje.trim() || !grupoSeleccionado || !usuario?._id) return;
+
+    console.log("Enviando mensaje con:", {
+      id_chat: grupoSeleccionado.id_chat._id,
+      id_usuario: usuario._id,
+      mensaje,
+    });
+
+    try {
+      const res = await fetch("http://localhost:8000/mensaje", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id_chat: grupoSeleccionado.id_chat._id,
+          id_usuario: usuario._id,
+          mensaje: mensaje,
+        }),
+      });
+
+      if (!res.ok) throw new Error("Error al enviar el mensaje");
+
+      const nuevoMensaje = await res.json();
+
+      // Actualiza la lista de mensajes en el frontend
+      setMensajes((prev) => [...prev, nuevoMensaje]);
+    } catch (err) {
+      console.error("Error al enviar mensaje:", err);
+    }
+
     setMensaje("");
   };
 
@@ -88,11 +121,12 @@ export default function Home() {
                 </div>
               ))
             ) : (
-              <div>No hay mensajes en este grupo:   {grupoSeleccionado._id}</div>
+              <div>No hay mensajes en este grupo.</div>
             )
           ) : (
             <div>Selecciona un grupo para ver los mensajes.</div>
           )}
+          <div ref={chatEndRef} />
         </div>
 
         <div className="p-4">

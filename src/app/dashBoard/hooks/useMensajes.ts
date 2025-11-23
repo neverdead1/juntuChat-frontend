@@ -18,17 +18,22 @@ export function useMensajes(id_chat: string | null) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id_chat) return;
+    // Si no hay id_chat, limpiamos mensajes y salimos
+    if (!id_chat) {
+      setMensajes([]);
+      return;
+    }
 
     const fetchMensajes = async () => {
       setLoading(true);
+      setError(null); // limpiamos error previo
       try {
         const res = await fetch(`http://localhost:8000/mensaje/grupo/${id_chat}`);
         if (!res.ok) throw new Error("Error al cargar mensajes");
-        const data = await res.json();
+        const data: Mensaje[] = await res.json();
         setMensajes(data);
       } catch (err: any) {
-        setError(err.message);
+        setError(err.message || "Error desconocido");
       } finally {
         setLoading(false);
       }
