@@ -79,7 +79,7 @@ export function LoginSlider() {
 
       {loading && <p className="text-center text-blue-500">Cargando...</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
-      {usuario && <p className="text-center text-green-600">Bienvenido, {usuario.nombre}</p>}
+      {/*{usuario && <p className="text-center text-green-600">Bienvenido, {usuario.nombre}</p>}*/}
     </div>
   );
 }
